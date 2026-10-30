@@ -1,0 +1,21 @@
+services:
+  quant-agent:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cross-market-quant-agent
+    ports:
+      - "8080:8080"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-sk-local-dev-key}
+      - OPENAI_BASE_URL=${OPENAI_BASE_URL:-http://host.docker.internal:8000/v1}
+      - LLM_MODEL=${LLM_MODEL:-gemma-4-E4B-it}
+      - EMBEDDING_MODEL=${EMBEDDING_MODEL:-bge-m3}
+      - MIN_SCORE=${MIN_SCORE:-0.35}
+      - TOP_K=${TOP_K:-5}
+      - MAX_AGENT_STEPS=${MAX_AGENT_STEPS:-6}
+      - CHUNKING_STRATEGY=${CHUNKING_STRATEGY:-markdown_section}
+    volumes:
+      - ./corpus:/app/corpus
+      - ./eval:/app/eval
+    restart: unless-stopped

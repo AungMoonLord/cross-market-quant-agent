@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cross-market-quant-agent"
+version = "1.0.0"
+description = "Institutional Cross-Market Financial Quant & Filing Analyst Agent for Thai SET (56-1 One Report) & US Equities (SEC Form 10-K)"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+    { name = "Quantitative AI Systems Architecture Team" }
+]
+dependencies = [
+    "openai>=1.40.0",
+    "pydantic>=2.7.0",
+    "fastapi>=0.111.0",
+    "uvicorn[standard]>=0.30.0",
+    "python-dotenv>=1.0.1",
+    "numpy>=1.26.0",
+    "httpx>=0.27.0",
+    "sse-starlette>=2.1.0",
+    "pypdf>=4.0.0",
+    "python-multipart>=0.0.9",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.2.0",
+    "pytest-asyncio>=0.23.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["app*", "agent*", "corpus*", "eval*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-v --tb=short"
