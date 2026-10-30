@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="th" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>Cross-Market Quant AI Chatbot | SET 56-1 & US 10-K Analyst</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Marked.js for fast client-side markdown rendering -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <style>
+    :root { color-scheme: dark; }
+    body {
+      background-color: #06090e;
+      color: #e2e8f0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+    .mono {
+      font-family: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+    }
+    .citation-pill {
+      display: inline-flex;
+      align-items: center;
+      background-color: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      padding: 1px 7px;
+      border-radius: 4px;
+      font-size: 0.74rem;
+      font-family: 'JetBrains Mono', monospace;
+      cursor: pointer;
+      margin: 0 2px;
+      font-weight: 600;
+      transition: all 0.15s ease;
+    }
+    .citation-pill:hover {
+      background-color: rgba(16, 185, 129, 0.3);
+      border-color: #10b981;
+      transform: translateY(-1px);
+    }
+    .prose-dark {
+      color: #cbd5e1;
+      line-height: 1.7;
+    }
+    .prose-dark h1, .prose-dark h2, .prose-dark h3, .prose-dark h4 {
+      color: #f8fafc;
+      font-weight: 700;
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
+    }
+    .prose-dark h2 { font-size: 1.25rem; border-bottom: 1px solid #1e293b; padding-bottom: 0.3rem; }
+    .prose-dark h3 { font-size: 1.1rem; }
+    .prose-dark strong { color: #f1f5f9; }
+    .prose-dark ul { list-style-type: disc; margin-left: 1.25rem; margin-top: 0.5rem; margin-bottom: 0.5rem; }
+    .prose-dark ol { list-style-type: decimal; margin-left: 1.25rem; margin-top: 0.5rem; margin-bottom: 0.5rem; }
+    .prose-dark li { margin-bottom: 0.25rem; }
+    .prose-dark table { width: 100%; border-collapse: collapse; margin: 0.75rem 0; font-size: 0.85rem; }
+    .prose-dark th, .prose-dark td { border: 1px solid #334155; padding: 6px 10px; text-align: left; }
+    .prose-dark th { background-color: #0f172a; color: #38bdf8; font-family: 'JetBrains Mono', monospace; }
+    .prose-dark tr:nth-child(even) { background-color: rgba(15, 23, 42, 0.4); }
+    .prose-dark code { font-family: 'JetBrains Mono', monospace; background-color: #1e293b; padding: 2px 5px; border-radius: 4px; font-size: 0.82rem; color: #38bdf8; }
+    .prose-dark pre { background-color: #090d16; border: 1px solid #1e293b; border-radius: 6px; padding: 10px; overflow-x: auto; margin: 0.75rem 0; }
+    .prose-dark blockquote { border-left: 3px solid #10b981; padding-left: 10px; color: #94a3b8; font-style: italic; }
+
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #06090e; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #334155; }
+  </style>
+</head>
+<body class="h-screen w-screen overflow-hidden flex bg-[#06090e] text-slate-200">
+
+  <!-- ========================================================================= -->
+  <!-- LEFT SIDEBAR: Conversations (+ New Chat) & Corpus Stock Universe           -->
+  <!-- ========================================================================= -->
+  <aside id="sidebar" class="w-72 sm:w-80 border-r border-slate-800 bg-[#090d15] flex flex-col h-full z-20 flex-shrink-0 transition-all duration-200">
+    <!-- Brand / Header -->
+    <div class="p-3.5 border-b border-slate-800/80 flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <div class="h-8 w-8 rounded-lg bg-gradient-to-tr from-emerald-500 to-cyan-500 flex items-center justify-center text-slate-950 font-black shadow-lg shadow-emerald-500/20 text-sm">
+          QA
+        </div>
+        <div>
+          <div class="font-bold text-sm tracking-tight text-white flex items-center gap-1.5">
+            <span>QUANT AGENT</span>
+            <span class="text-[10px] px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 font-mono">2.0</span>
+          </div>
+          <p class="text-[10px] text-slate-400">SET 56-1 &amp; US SEC 10-K AI Analyst</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- "+ New Chat" Action Button -->
+    <div class="p-3 border-b border-slate-800/60">
+      <button
+        onclick="createNewChat()"
+        class="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-slate-950 font-bold text-xs shadow-md shadow-emerald-950/40 transition hover:scale-[1.01]"
+      >
+        <span class="text-base font-bold">+</span>
+        <span>New Chat (เปิดบทสนทนาใหม่)</span>
+      </button>
+    </div>
+
+    <!-- Chat Sessions List (Conversational Memory) -->
+    <div class="flex-1 overflow-y-auto px-2 py-3 space-y-1" id="sessionsListContainer">
+      <div class="text-[11px] font-semibold text-slate-400 px-2 py-1 uppercase tracking-wider flex items-center justify-between">
+        <span>Recent Chats (ประวัติคุย)</span>
+        <div class="flex items-center gap-1.5">
+          <span id="sessionCountBadge" class="text-[10px] mono bg-slate-800 px-1.5 py-0.2 rounded text-slate-300">0</span>
+          <button
+            type="button"
+            onclick="confirmDeleteAllChats()"
+            class="text-[10px] text-slate-400 hover:text-rose-400 px-1.5 py-0.5 rounded hover:bg-rose-950/60 border border-slate-800/80 transition flex items-center gap-1"
+            title="ลบประวัติการสนทนาทั้งหมด (Delete All Chats)"
+          >
+            <span>🗑️</span>
+            <span>ลบทั้งหมด</span>
+          </button>
+        </div>
+      </div>
+      <div id="sessionsList" class="space-y-1">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+
+    <!-- Active Corpus & Stock Universe Watchlist -->
+    <div class="border-t border-slate-800 bg-[#070b12] p-3 flex flex-col gap-2.5">
+      <div class="flex items-center justify-between">
+        <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+          📚 Corpus Stocks & Filings (หุ้นและเอกสาร)
+        </span>
+        <span id="stockCountBadge" class="text-[10px] mono px-1.5 py-0.2 rounded bg-cyan-950 text-cyan-300 border border-cyan-800/40">0</span>
+      </div>
+
+      <!-- Clickable stock badges in active corpus -->
+      <div id="activeStocksBadges" class="flex flex-col gap-1.5 max-h-48 overflow-y-auto pr-0.5">
+        <!-- Loaded dynamically, e.g. SPCX, DELTA, NVDA -->
+      </div>
+
+      <!-- Action Buttons: Upload Filing & Clear Corpus -->
+      <div class="grid grid-cols-2 gap-2 pt-1 border-t border-slate-800/80">
+        <button
+          onclick="openUploadModal()"
+          class="flex items-center justify-center gap-1.5 px-2.5 py-2 rounded bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/30 text-[11px] font-semibold transition"
+          title="Upload new Thai SET or US SEC financial filing"
+        >
+          <span>📤</span>
+          <span>Upload Filing</span>
+        </button>
+        <button
+          onclick="confirmClearCorpus()"
+          class="flex items-center justify-center gap-1.5 px-2.5 py-2 rounded bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/25 text-[11px] font-semibold transition"
+          title="Clear all corpus filings and database records"
+        >
+          <span>🗑️</span>
+          <span>Clear Corpus</span>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ========================================================================= -->
+  <!-- MAIN CHAT AREA (Conversational LLM Interface)                             -->
+  <!-- ========================================================================= -->
+  <main class="flex-1 flex flex-col h-full bg-[#06090e] relative overflow-hidden">
+    <!-- Top Context & Settings Bar -->
+    <header class="border-b border-slate-800/80 bg-[#080d16]/90 backdrop-blur px-5 py-2.5 flex flex-wrap items-center justify-between gap-3 flex-shrink-0 z-10">
+      <div class="flex items-center gap-3">
+        <button id="toggleSidebarBtn" onclick="toggleSidebar()" class="sm:hidden text-slate-400 hover:text-white p-1">
+          ☰
+        </button>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 id="currentChatTitle" class="font-bold text-sm text-white max-w-[280px] sm:max-w-md truncate">
+              New Conversation
+            </h1>
+            <span id="chatStateBadge" class="mono text-[10px] px-1.5 py-0.2 rounded bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+              Active Session
+            </span>
+          </div>
+          <div class="flex items-center gap-2 text-[10px] text-slate-400 mono">
+            <span id="activeModelBadge">LLM: gemma-4-E4B-it • Embeddings: bge-m3</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Controls: Language Toggle, Mode Selector, Target Currency -->
+      <div class="flex items-center gap-2 text-xs mono">
+        <!-- Language preference selector -->
+        <div class="flex items-center gap-1 bg-slate-900 border border-slate-800 rounded px-2 py-1">
+          <span class="text-slate-400 text-[11px]">Lang:</span>
+          <select id="responseLang" class="bg-transparent text-slate-200 focus:outline-none text-[11px]">
+            <option value="auto">Auto (ตามคำถาม)</option>
+            <option value="th">ไทย (TH)</option>
+            <option value="en">English (EN)</option>
+          </select>
+        </div>
+
+        <!-- Mode selector: Full Agent vs RAG Only -->
+        <div class="flex items-center gap-1 bg-slate-900 border border-slate-800 rounded px-2 py-1">
+          <span class="text-slate-400 text-[11px]">Mode:</span>
+          <select id="agentMode" class="bg-transparent text-slate-200 focus:outline-none text-[11px]">
+            <option value="agent">ReAct Agent (SQL+Quant+RAG)</option>
+            <option value="rag_only">Filing RAG Only</option>
+          </select>
+        </div>
+
+        <!-- Target Currency -->
+        <div class="flex items-center gap-1 bg-slate-900 border border-slate-800 rounded px-2 py-1">
+          <span class="text-slate-400 text-[11px]">Currency:</span>
+          <select id="targetCurrency" class="bg-transparent text-slate-200 focus:outline-none text-[11px]">
+            <option value="USD">USD ($)</option>
+            <option value="THB">THB (฿)</option>
+            <option value="NATIVE">Native</option>
+          </select>
+        </div>
+      </div>
+    </header>
+
+    <!-- Scrollable Messages Container -->
+    <div id="chatScrollArea" class="flex-1 overflow-y-auto px-4 sm:px-8 py-6 space-y-6">
+      <!-- Empty Conversation State / Welcome Banner -->
+      <div id="welcomeBanner" class="max-w-3xl mx-auto py-8 text-center">
+        <div class="h-14 w-14 rounded-2xl bg-gradient-to-tr from-emerald-500 to-cyan-500 flex items-center justify-center text-slate-950 font-black text-2xl mx-auto mb-4 shadow-xl shadow-emerald-500/20">
+          🤖
+        </div>
+        <h2 class="text-xl font-bold text-white mb-2 tracking-tight">
+          CROSS-MARKET QUANT &amp; FILING TERMINAL - Cross-Market Financial Quant &amp; Filing Analyst
+        </h2>
+        <p class="text-xs text-slate-400 max-w-xl mx-auto mb-6 leading-relaxed">
+          ระบบวิเคราะห์งบการเงินและรายงานประจำปี Thai SET Form 56-1 One Report (TFRS) และ US SEC Form 10-K / 10-Q (US GAAP)
+          พร้อมคำนวณอัตราส่วนทางการเงินเชิงปริมาณแบบ Deterministic (DuPont ROE, Altman Z-Score, FCF Yield) และ Citation อ้างอิงแม่นยำ
+        </p>
+
+        <!-- Suggested Prompt Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-left max-w-2xl mx-auto">
+          <div onclick="selectSuggestedPrompt('สรุปผลการดำเนินงานและรายได้ของ SPCX ปี 2026')"
+               class="p-3 rounded-lg bg-slate-900/80 hover:bg-slate-800 border border-slate-800/80 hover:border-emerald-500/50 cursor-pointer transition group">
+            <div class="text-xs font-semibold text-slate-200 group-hover:text-emerald-400">📊 วิเคราะห์ผลประกอบการ SPCX</div>
+            <div class="text-[11px] text-slate-400 mt-1">สรุปผลการดำเนินงานและรายได้ของ SPCX ปี 2026 จากงบการเงินล่าสุด</div>
+          </div>
+
+          <div onclick="selectSuggestedPrompt('เปรียบเทียบ DELTA กับ NVDA ในด้าน Net Margin, P/E Ratio และ ROE')"
+               class="p-3 rounded-lg bg-slate-900/80 hover:bg-slate-800 border border-slate-800/80 hover:border-emerald-500/50 cursor-pointer transition group">
+            <div class="text-xs font-semibold text-slate-200 group-hover:text-emerald-400">⚖️ Cross-Market Peer Comparison</div>
+            <div class="text-[11px] text-slate-400 mt-1">เปรียบเทียบ DELTA (SET) กับ NVDA (US) ปรับ FX และมาตรฐานบัญชี</div>
+          </div>
+
+          <div onclick="selectSuggestedPrompt('คำนวณ 3-Stage DuPont ROE และ Altman Z-Score ของบริษัทในระบบ')"
+               class="p-3 rounded-lg bg-slate-900/80 hover:bg-slate-800 border border-slate-800/80 hover:border-emerald-500/50 cursor-pointer transition group">
+            <div class="text-xs font-semibold text-slate-200 group-hover:text-emerald-400">🧮 Deterministic Quant Metrics</div>
+            <div class="text-[11px] text-slate-400 mt-1">คำนวณ DuPont ROE, อัตราส่วนสภาพคล่อง, และประเมินความเสี่ยงล้มละลาย</div>
+          </div>
+
+          <div onclick="selectSuggestedPrompt('มีข้อพิพาททางกฎหมาย นโยบาย FX Hedging หรือหนี้สินที่ไม่ได้บันทึกในงบ (Leases) หรือไม่')"
+               class="p-3 rounded-lg bg-slate-900/80 hover:bg-slate-800 border border-slate-800/80 hover:border-emerald-500/50 cursor-pointer transition group">
+            <div class="text-xs font-semibold text-slate-200 group-hover:text-emerald-400">🔍 Footnotes Risk Factors</div>
+            <div class="text-[11px] text-slate-400 mt-1">สกัดข้อมูลความเสี่ยงสัญญาเช่า, อัตราแลกเปลี่ยน, และภาระผูกพันจากหมายเหตุ</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Messages Stream (Appends here) -->
+      <div id="chatMessages" class="max-w-4xl mx-auto space-y-6">
+        <!-- Rendered conversation bubbles -->
+      </div>
+    </div>
+
+    <!-- Chat Input Fixed Bottom Area -->
+    <div class="border-t border-slate-800 bg-[#080d16]/95 backdrop-blur px-4 sm:px-8 py-3.5 flex-shrink-0 z-10">
+      <form id="chatForm" onsubmit="handleChatSubmit(event)" class="max-w-4xl mx-auto relative flex flex-col gap-1.5">
+        <div class="flex items-end gap-2 bg-[#0d1424] border border-slate-700/80 focus-within:border-emerald-500 rounded-xl px-3.5 py-2.5 shadow-lg transition">
+          <textarea
+            id="chatInput"
+            rows="1"
+            placeholder="ถามคำถามงบการเงิน, หุ้น, หรือขอให้วิเคราะห์เปรียบเทียบ (กด Enter เพื่อส่ง, Shift+Enter ขึ้นบรรทัดใหม่)..."
+            class="flex-1 bg-transparent text-slate-100 placeholder-slate-500 focus:outline-none resize-none text-sm max-h-36 leading-relaxed"
+            onkeydown="handleTextareaKeydown(event)"
+            oninput="autoResizeTextarea(this)"
+          ></textarea>
+
+          <button
+            type="submit"
+            id="sendBtn"
+            class="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold text-xs flex items-center gap-1.5 transition disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-emerald-950/50"
+          >
+            <span id="sendBtnIcon">🚀</span>
+            <span id="sendBtnText">ส่ง</span>
+          </button>
+        </div>
+
+        <div class="flex items-center justify-between text-[11px] text-slate-500 px-1 mono">
+          <span>ความจำบริบทต่อเนื่อง (Conversational Memory) • Citing Thai SET 56-1 &amp; US SEC 10-K Filings</span>
+          <span id="typingIndicator" class="hidden text-emerald-400 animate-pulse font-semibold">AI กำลังวิเคราะห์ข้อมูลและดึงข้อมูลอ้างอิง...</span>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: Cascading Upload Filing (SET TH vs US SEC Standards)                -->
+  <!-- ========================================================================= -->
+  <div id="uploadModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-[#0b1120] border border-slate-800 rounded-2xl max-w-2xl w-full p-6 shadow-2xl overflow-y-auto max-h-[92vh]">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800 mb-4">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">📤</span>
+          <div>
+            <h3 class="font-bold text-base text-white">อัปโหลดเอกสารงบการเงิน (Upload Filing)</h3>
+            <p class="text-xs text-slate-400">รองรับมาตรฐานรายงานทั้งตลาดหุ้นไทย (SET) และตลาดสหรัฐฯ (SEC)</p>
+          </div>
+        </div>
+        <button onclick="closeUploadModal()" class="text-slate-400 hover:text-white text-lg font-mono">✕</button>
+      </div>
+
+      <form id="uploadFilingForm" onsubmit="handleUploadFiling(event)" class="space-y-4 text-xs">
+        
+        <!-- SECTION 1: ข้อมูลบริษัท & ตลาด (Company & Market Profile) -->
+        <div class="bg-slate-900/60 p-3.5 rounded-xl border border-slate-800 space-y-3">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-800/80">
+            <span class="text-[11px] font-semibold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+              <span>🏢</span>
+              <span>1. ข้อมูลบริษัทและตลาดหุ้น (Company &amp; Market)</span>
+            </span>
+            <span class="text-[10px] text-slate-500 font-mono">ใช้ร่วมกันทุกงบการเงินที่อัปโหลด</span>
+          </div>
+
+          <!-- Market, Currency, Standard -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label class="block text-slate-300 font-semibold mb-1">
+                Market (ตลาด) <span class="text-emerald-400">*</span>
+              </label>
+              <select id="uploadMarket" onchange="onMarketChange()" class="w-full bg-slate-950 border border-slate-700 focus:border-emerald-500 rounded px-2.5 py-2 text-white font-mono focus:outline-none text-xs">
+                <option value="US">US - ตลาดหุ้นสหรัฐฯ (SEC 🇺🇸)</option>
+                <option value="TH">TH - ตลาดหุ้นไทย (SET 🇹🇭)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-slate-300 font-semibold mb-1">Currency (สกุลเงิน)</label>
+              <select id="uploadCurrency" class="w-full bg-slate-950 border border-slate-700 focus:border-emerald-500 rounded px-2.5 py-2 text-white font-mono focus:outline-none text-xs">
+                <option value="USD">USD ($)</option>
+                <option value="THB">THB (฿)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-slate-300 font-semibold mb-1">Accounting Standard</label>
+              <select id="uploadAccountingStandard" class="w-full bg-slate-950 border border-slate-700 focus:border-emerald-500 rounded px-2.5 py-2 text-white font-mono focus:outline-none text-xs">
+                <option value="US_GAAP">US GAAP</option>
+                <option value="TFRS">TFRS</option>
+                <option value="IFRS">IFRS</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Stock Symbol & Company Name -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-slate-300 font-semibold mb-1">Stock Ticker Symbol <span class="text-emerald-400">*</span></label>
+              <input type="text" id="uploadTicker" placeholder="เช่น GOOG, SPCX, NVDA, PTT" required
+                     class="w-full bg-slate-950 border border-slate-700 focus:border-emerald-500 rounded px-3 py-2 text-white font-mono uppercase focus:outline-none" />
+            </div>
+            <div>
+              <label class="block text-slate-300 font-semibold mb-1">Company Name (ชื่อบริษัท) <span class="text-emerald-400">*</span></label>
+              <input type="text" id="uploadName" placeholder="เช่น Alphabet Inc., SpaceX, NVIDIA" required
+                     class="w-full bg-slate-950 border border-slate-700 focus:border-emerald-500 rounded px-3 py-2 text-white focus:outline-none" />
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 2: แนบเอกสารงบการเงินและงวดรายงาน (Filing Documents & Periods) -->
+        <div class="bg-slate-900/40 p-3.5 rounded-xl border border-slate-800 space-y-3">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-800/80">
+            <span class="text-[11px] font-semibold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+              <span>📄</span>
+              <span>2. แนบเอกสารงบการเงิน (Filing Documents &amp; Periods)</span>
+            </span>
+            <span class="text-[10px] text-emerald-400 font-mono">⚡ ตรวจจับงวดงบแยกรายไฟล์อัตโนมัติ</span>
+          </div>
+
+          <!-- File Upload Dropzone (Supports Multiple Files & Drag and Drop) -->
+          <div id="uploadDropzone"
+               class="border-2 border-dashed border-slate-700 hover:border-emerald-500 rounded-xl p-4 text-center cursor-pointer transition bg-slate-950/60"
+               onclick="document.getElementById('uploadFile').click()"
+               ondragover="handleDragOver(event)"
+               ondragleave="handleDragLeave(event)"
+               ondrop="handleFileDrop(event)">
+            <input type="file" id="uploadFile" accept=".pdf,.md,.txt" multiple class="hidden" onchange="handleFilesPicked(event)" />
+            <div id="fileUploadPrompt">
+              <div class="text-3xl mb-1">📂</div>
+              <div class="font-semibold text-slate-200 text-xs">คลิกเพื่อเลือกไฟล์ หรือลากไฟล์งบทั้งหมดมาวางที่นี่</div>
+              <div class="text-[11px] text-slate-500 mt-1">เลือกไฟล์งบการเงินหลายไตรมาสพร้อมกันได้ (เช่น Q1, Q2, Q3, 10-K, 10-Q) ระบบจะตรวจจับงวดและปีอัตโนมัติ</div>
+            </div>
+          </div>
+
+          <!-- Batch Files Queue List (Single Source of Truth for Year / Quarter / Filing Type) -->
+          <div id="batchFilesQueueContainer" class="hidden space-y-2 bg-slate-950/90 border border-slate-800/90 rounded-xl p-3">
+            <div class="flex items-center justify-between text-[11px] font-semibold text-slate-300 border-b border-slate-800/80 pb-1.5">
+              <div class="flex items-center gap-2">
+                <span>📦 รายการไฟล์และงวดงบที่จะบันทึก</span>
+                <span id="batchFilesCountBadge" class="px-2 py-0.2 rounded-full bg-emerald-500/20 text-emerald-300 font-mono text-[10px] border border-emerald-500/30">0 ไฟล์</span>
+              </div>
+              <button type="button" onclick="clearBatchQueue()" class="text-slate-500 hover:text-rose-400 text-[10.5px] transition flex items-center gap-1 font-mono">
+                <span>🗑️</span>
+                <span>ล้างคิวทั้งหมด</span>
+              </button>
+            </div>
+
+            <p class="text-[10px] text-emerald-400 font-mono flex items-center gap-1">
+              <span>💡</span>
+              <span>ระบบตรวจจับงวดงบและประเภทรายงานแยกตามแต่ละไฟล์ให้อัตโนมัติ (สามารถตรวจสอบและปรับเปลี่ยนได้โดยตรงในแต่ละแถว)</span>
+            </p>
+
+            <div id="batchFilesList" class="space-y-1.5 max-h-56 overflow-y-auto pr-1">
+              <!-- Dynamically populated rows -->
+            </div>
+
+            <!-- Batch Upload Progress Bar -->
+            <div id="batchProgressWrapper" class="hidden space-y-1.5 pt-2 border-t border-slate-800">
+              <div class="flex items-center justify-between text-[10.5px] text-slate-300 font-mono">
+                <span id="batchProgressText" class="truncate">กำลังประมวลผล 0/0...</span>
+                <span id="batchProgressPct" class="text-emerald-400 font-bold">0%</span>
+              </div>
+              <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+                <div id="batchProgressBar" class="h-full bg-gradient-to-r from-emerald-500 to-teal-400 transition-all duration-300" style="width: 0%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Optional Financial Ratios accordion -->
+        <details class="rounded-lg border border-slate-800 bg-slate-950/50 p-3">
+          <summary class="cursor-pointer text-slate-400 hover:text-slate-200 font-semibold text-xs select-none">
+            ➕ ระบุตัวเลขทางการเงินเพิ่มเติม (ทางเลือก: คำนวณ DuPont ROE, P/E, Altman Z ทันที สำหรับกรณีอัปโหลดทีละไฟล์)
+          </summary>
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 mt-3 pt-2 border-t border-slate-800">
+            <div>
+              <label class="text-[11px] text-slate-400 block mb-0.5">Revenue (รายได้ ล้านหน่วย)</label>
+              <input type="number" step="any" id="metricRevenue" placeholder="เช่น 14600.0"
+                     class="w-full bg-slate-900 border border-slate-800 rounded px-2.5 py-1.5 text-white font-mono text-xs focus:outline-none" />
+            </div>
+            <div>
+              <label class="text-[11px] text-slate-400 block mb-0.5">Net Profit (กำไรสุทธิ ล้านหน่วย)</label>
+              <input type="number" step="any" id="metricNetProfit" placeholder="เช่น 2450.0"
+                     class="w-full bg-slate-900 border border-slate-800 rounded px-2.5 py-1.5 text-white font-mono text-xs focus:outline-none" />
+            </div>
+            <div>
+              <label class="text-[11px] text-slate-400 block mb-0.5">Total Assets (สินทรัพย์รวม)</label>
+              <input type="number" step="any" id="metricTotalAssets" placeholder="เช่น 45000.0"
+                     class="w-full bg-slate-900 border border-slate-800 rounded px-2.5 py-1.5 text-white font-mono text-xs focus:outline-none" />
+            </div>
+            <div>
+              <label class="text-[11px] text-slate-400 block mb-0.5">Total Equity (ส่วนของผู้ถือหุ้น)</label>
+              <input type="number" step="any" id="metricTotalEquity" placeholder="เช่น 22000.0"
+                     class="w-full bg-slate-900 border border-slate-800 rounded px-2.5 py-1.5 text-white font-mono text-xs focus:outline-none" />
+            </div>
+            <div>
+              <label class="text-[11px] text-slate-400 block mb-0.5">Gross Profit (กำไรขั้นต้น)</label>
+              <input type="number" step="any" id="metricGrossProfit" placeholder="เช่น 5800.0"
+                     class="w-full bg-slate-900 border border-slate-800 rounded px-2.5 py-1.5 text-white font-mono text-xs focus:outline-none" />
+            </div>
+          </div>
+        </details>
+
+        <div id="uploadFeedback" class="hidden text-xs rounded p-2.5 font-mono"></div>
+
+        <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-800">
+          <button type="button" onclick="closeUploadModal()" class="px-4 py-2 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold">
+            ยกเลิก
+          </button>
+          <button type="submit" id="uploadSubmitBtn" class="px-5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold transition flex items-center gap-2">
+            <span>🚀 อัปโหลด &amp; สร้าง Vector Chunks</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Source Chunks Modal / Drawer -->
+  <div id="sourcesModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-[#0b1120] border border-slate-800 rounded-2xl max-w-3xl w-full p-6 shadow-2xl overflow-y-auto max-h-[85vh]">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800 mb-4">
+        <h3 class="font-bold text-sm text-white flex items-center gap-2">
+          <span>📚</span>
+          <span>Retrieved Filing Sources (bge-m3 Chunks)</span>
+        </h3>
+        <button onclick="closeSourcesModal()" class="text-slate-400 hover:text-white font-mono">✕</button>
+      </div>
+      <div id="sourcesContent" class="space-y-3 text-xs font-mono">
+        <!-- Chunks list rendered here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Context Menu for Session Actions (Rename, Pin, Delete) matching screenshot -->
+  <div id="sessionContextMenu" class="hidden fixed z-50 bg-[#151d2e] border border-slate-700/80 rounded-xl shadow-2xl py-1 w-48 text-xs font-sans backdrop-blur-md">
+    <button onclick="triggerRenameSession()" class="w-full text-left px-3.5 py-2 hover:bg-slate-800 text-slate-200 flex items-center gap-2.5 transition">
+      <span class="text-slate-400">✏️</span>
+      <span class="font-medium">Rename</span>
+    </button>
+    <button onclick="triggerPinSession()" class="w-full text-left px-3.5 py-2 hover:bg-slate-800 text-slate-200 flex items-center justify-between transition">
+      <div class="flex items-center gap-2.5">
+        <span class="text-slate-400">📌</span>
+        <span id="pinActionLabel" class="font-medium">Pin</span>
+      </div>
+      <span class="text-[10px] text-slate-500 font-mono">Alt+Shift+P</span>
+    </button>
+    <div class="h-px bg-slate-800/80 my-1"></div>
+    <button onclick="triggerDeleteSession()" class="w-full text-left px-3.5 py-2 hover:bg-rose-950/60 text-rose-400 hover:text-rose-300 flex items-center gap-2.5 transition">
+      <span>🗑️</span>
+      <span class="font-medium">Delete</span>
+    </button>
+  </div>
+
+  <!-- Rename Modal -->
+  <div id="renameModal" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-[#0f172a] border border-slate-700 rounded-xl max-w-sm w-full p-4 shadow-2xl">
+      <h4 class="font-bold text-sm text-white mb-2 flex items-center gap-2">
+        <span>✏️</span>
+        <span>Rename Conversation</span>
+      </h4>
+      <input type="text" id="renameInput" class="w-full bg-slate-950 border border-slate-700 focus:border-emerald-500 rounded px-3 py-2 text-white text-xs mb-3 focus:outline-none" onkeydown="handleRenameInputKey(event)" />
+      <div class="flex justify-end gap-2 text-xs">
+        <button onclick="closeRenameModal()" class="px-3 py-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300">ยกเลิก</button>
+        <button onclick="submitRenameModal()" class="px-3 py-1.5 rounded bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold">บันทึก</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/app.js?v=1793271859964"></script>
+</body>
+</html>
