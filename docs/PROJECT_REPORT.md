@@ -27,37 +27,68 @@ Financial analysts, equity research associates, and institutional quantitative f
 
 The application implements a layered architecture integrating techniques from **all 6 capability families** covered in Lectures 1–15:
 
-```mermaid
-flowchart TD
-    User([Financial Analyst]) -->|Browser / Web Terminal| WebUI[Bloomberg-Style Dark Terminal UI]
-    WebUI -->|HTTP POST / SSE Stream| API[FastAPI Application Gateway]
-    
-    subgraph Guardrails & Routing
-        API --> Filter{In-Scope & Supported?}
-        Filter -->|No / Trap / Out-of-Corpus| Abstain[Honest Refusal: Signal=ABSTAIN]
-        Filter -->|Yes| Agent[ReAct Agent Loop - agent/loop.py]
-    end
-
-    subgraph Tool Calling Execution
-        Agent --> Tools{Tool Selector}
-        Tools -->|Read-Only SQL| SQLTool[agent/sql_tool.py - Sandboxed SQLite]
-        Tools -->|Deterministic Math| QuantTool[agent/quant_calc.py - DuPont & Altman Z]
-        Tools -->|Section RAG| RAGTool[app/rag.py - Grounded Filing RAG]
-    end
-
-    subgraph Storage Layer
-        SQLTool --> DB[(corpus/financials.db - 2025/2026 Financial Statements)]
-        RAGTool --> VDB[(corpus/vector_index.json - 346 Chunks)]
-    end
-
-    subgraph Grounded Synthesis
-        Tools -->|Observations| Agent
-        Agent -->|Grounding System Prompt| LLM[Google Gemma-4-E4B-it via OpenAI Client]
-        LLM -->|Verify Citations & JSON Fallback| Output[Pydantic QuantSignalReport + SSE Stream]
-    end
-
-    Output --> WebUI
-    Abstain --> WebUI
+```text
++-------------------------------------------------------------------------------------------------------+
+|                                    USER / QUANTITATIVE ANALYST                                        |
++-------------------------------------------------------------------------------------------------------+
+                                                   |
+                                                   v
++-------------------------------------------------------------------------------------------------------+
+|                             BLOOMBERG-STYLE TERMINAL UI (web/index.html)                              |
+|                       Real-time SSE Event Stream Badges, Metric Cards & Chat                          |
++-------------------------------------------------------------------------------------------------------+
+                                                   |  HTTP REST / SSE Stream (/api/chat, /api/memo)
+                                                   v
++-------------------------------------------------------------------------------------------------------+
+|                                  FASTAPI APPLICATION GATEWAY (app/main.py)                            |
++-------------------------------------------------------------------------------------------------------+
+                                                   |
+                         +-------------------------+-------------------------+
+                         | (Regex & Financial Scope Guardrail Check)         |
+                         v                                                   v
+             [ Out-of-Corpus / Trap ]                                [ In-Scope Query ]
+                         |                                                   |
+                         v                                                   v
+         +-------------------------------+               +---------------------------------------+
+         |     HONEST ABSTENTION ENGINE  |               |       AUTONOMOUS ReAct AGENT LOOP     |
+         |     Signal: ABSTAIN           |               |             (agent/loop.py)           |
+         |     Confidence: 0.0           |               |   - Thought / Action / Observation    |
+         |     Upload Guidance Provided  |               |   - max_steps=5 Budget Enforcement    |
+         +-------------------------------+               +---------------------------------------+
+                         |                                                   |
+                         |                               +-------------------+-------------------+
+                         |                               |                   |                   |
+                         |                               v                   v                   v
+                         |                     +-------------------+ +---------------+ +---------------+
+                         |                     |   READ-ONLY SQL   | | QUANT MATH    | | SECTION RAG   |
+                         |                     | (agent/sql_tool)  | | (quant_calc)  | | (app/rag.py)  |
+                         |                     +-------------------+ +---------------+ +---------------+
+                         |                               |                   |                 |
+                         |                               v                   |                 v
+                         |                     +-------------------+         |         +---------------+
+                         |                     | SQLite DATABASE   |         |         | VECTOR INDEX  |
+                         |                     | financials.db     |         |         | (346 Chunks)  |
+                         |                     | Multi-Year Stmts  |         |         | BGE-M3 Embed  |
+                         |                     +-------------------+         |         +---------------+
+                         |                               |                   |                 |
+                         |                               +-------------------+-----------------+
+                         |                                                   |  (Structured Results)
+                         |                                                   v
+                         |                               +---------------------------------------+
+                         |                               |       SYNTHESIS & CITATION ENGINE     |
+                         |                               |    - Gemma-4-E4B-it LLM Completion    |
+                         |                               |    - Strict Grounding System Prompt   |
+                         |                               |    - Verified [doc_id:chunk_id] Tags  |
+                         |                               |    - Pydantic QuantSignalReport       |
+                         |                               +---------------------------------------+
+                         |                                                   |
+                         +-----------------------+---------------------------+
+                                                 |
+                                                 v
++-------------------------------------------------------------------------------------------------------+
+|                                  FINAL STRUCTURED ANALYST RESPONSE                                    |
+|             (Real-time SSE Stream, Financial Table, Signal, Key Metrics & Verified Citations)         |
++-------------------------------------------------------------------------------------------------------+
 ```
 
 ### Table 1: Alignment with Course Capability Families (Lectures 1–15)

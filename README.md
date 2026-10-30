@@ -44,39 +44,68 @@ All synthetic mock filings were eliminated from the system. The corpus is built 
 
 ## 3. Architecture & System Flow
 
-```mermaid
-flowchart TD
-    User([User / Quantitative Analyst]) -->|Query / Chat / SSE| WebUI[Bloomberg-Style Dark Terminal UI]
-    WebUI -->|FastAPI REST / SSE Stream| API[FastAPI Application Gateway]
-    
-    subgraph Guardrails & Routing
-        API -->|Regex & Financial Scope Classifier| Guardrail{In-Scope & Supported Ticker?}
-        Guardrail -->|No / Trap / Out-of-Corpus| Abstain[Honest Abstention: Signal=ABSTAIN, Confidence=0.0]
-        Guardrail -->|Yes| Orchestrator[ReAct Agent Loop - agent/loop.py]
-    end
-
-    subgraph Agentic Tool Execution
-        Orchestrator -->|Decompose Query| Tools{Autonomous Tool Caller}
-        Tools -->|Read-Only SQL Query| SQLTool[agent/sql_tool.py - Sandboxed SQLite]
-        Tools -->|Deterministic Quant Ratios| QuantTool[agent/quant_calc.py - DuPont / Altman Z / FCF]
-        Tools -->|Vector Retrieval| RAGTool[app/rag.py - Grounded Filing RAG]
-    end
-
-    subgraph Grounded Storage
-        SQLTool --> SQLite[(corpus/financials.db - Balance Sheet & Income Statement)]
-        RAGTool --> VectorDB[(corpus/vector_index.json - 346 Section Chunks)]
-    end
-
-    subgraph Synthesis & Citations
-        SQLTool -->|Structured Results| Orchestrator
-        QuantTool -->|Exact Computed Ratios| Orchestrator
-        RAGTool -->|Verified Chunks| Orchestrator
-        Orchestrator -->|System Prompt with Grounding Policy| LLM[Google Gemma-4-E4B-it via OpenAI Client]
-        LLM -->|Verify Citations & JSON Fallback| StructuredReport[Pydantic QuantSignalReport + SSE Stream]
-    end
-
-    StructuredReport --> WebUI
-    Abstain --> WebUI
+```text
++-------------------------------------------------------------------------------------------------------+
+|                                    USER / QUANTITATIVE ANALYST                                        |
++-------------------------------------------------------------------------------------------------------+
+                                                   |
+                                                   v
++-------------------------------------------------------------------------------------------------------+
+|                             BLOOMBERG-STYLE TERMINAL UI (web/index.html)                              |
+|                       Real-time SSE Event Stream Badges, Metric Cards & Chat                          |
++-------------------------------------------------------------------------------------------------------+
+                                                   |  HTTP REST / SSE Stream (/api/chat, /api/memo)
+                                                   v
++-------------------------------------------------------------------------------------------------------+
+|                                  FASTAPI APPLICATION GATEWAY (app/main.py)                            |
++-------------------------------------------------------------------------------------------------------+
+                                                   |
+                         +-------------------------+-------------------------+
+                         | (Regex & Financial Scope Guardrail Check)         |
+                         v                                                   v
+             [ Out-of-Corpus / Trap ]                                [ In-Scope Query ]
+                         |                                                   |
+                         v                                                   v
+         +-------------------------------+               +---------------------------------------+
+         |     HONEST ABSTENTION ENGINE  |               |       AUTONOMOUS ReAct AGENT LOOP     |
+         |     Signal: ABSTAIN           |               |             (agent/loop.py)           |
+         |     Confidence: 0.0           |               |   - Thought / Action / Observation    |
+         |     Upload Guidance Provided  |               |   - max_steps=5 Budget Enforcement    |
+         +-------------------------------+               +---------------------------------------+
+                         |                                                   |
+                         |                               +-------------------+-------------------+
+                         |                               |                   |                   |
+                         |                               v                   v                   v
+                         |                     +-------------------+ +---------------+ +---------------+
+                         |                     |   READ-ONLY SQL   | | QUANT MATH    | | SECTION RAG   |
+                         |                     | (agent/sql_tool)  | | (quant_calc)  | | (app/rag.py)  |
+                         |                     +-------------------+ +---------------+ +---------------+
+                         |                               |                   |                 |
+                         |                               v                   |                 v
+                         |                     +-------------------+         |         +---------------+
+                         |                     | SQLite DATABASE   |         |         | VECTOR INDEX  |
+                         |                     | financials.db     |         |         | (346 Chunks)  |
+                         |                     | Multi-Year Stmts  |         |         | BGE-M3 Embed  |
+                         |                     +-------------------+         |         +---------------+
+                         |                               |                   |                 |
+                         |                               +-------------------+-----------------+
+                         |                                                   |  (Structured Results)
+                         |                                                   v
+                         |                               +---------------------------------------+
+                         |                               |       SYNTHESIS & CITATION ENGINE     |
+                         |                               |    - Gemma-4-E4B-it LLM Completion    |
+                         |                               |    - Strict Grounding System Prompt   |
+                         |                               |    - Verified [doc_id:chunk_id] Tags  |
+                         |                               |    - Pydantic QuantSignalReport       |
+                         |                               +---------------------------------------+
+                         |                                                   |
+                         +-----------------------+---------------------------+
+                                                 |
+                                                 v
++-------------------------------------------------------------------------------------------------------+
+|                                  FINAL STRUCTURED ANALYST RESPONSE                                    |
+|             (Real-time SSE Stream, Financial Table, Signal, Key Metrics & Verified Citations)         |
++-------------------------------------------------------------------------------------------------------+
 ```
 
 ---
