@@ -177,6 +177,7 @@ async def health_check() -> Dict[str, Any]:
         "indexed_chunks_count": len(pipeline.vectorstore.chunks),
         "supported_tickers": known,
         "tickers_count": len(known),
+        "commit": os.getenv("RENDER_GIT_COMMIT", "local-dev")[:7],
     }
 
 

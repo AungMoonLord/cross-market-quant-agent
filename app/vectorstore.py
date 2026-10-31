@@ -39,13 +39,23 @@ class VectorStore:
         if self.embeddings is None:
             self.embeddings = mat
         else:
+            if self.embeddings.shape[1] != mat.shape[1]:
+                target_dim = self.embeddings.shape[1]
+                if mat.shape[1] > target_dim:
+                    mat = mat[:, :target_dim]
+                else:
+                    padded = np.zeros((mat.shape[0], target_dim), dtype=np.float64)
+                    padded[:, :mat.shape[1]] = mat
+                    mat = padded
+                norms = np.linalg.norm(mat, axis=1, keepdims=True)
+                mat = mat / np.where(norms > 1e-12, norms, 1.0)
             self.embeddings = np.vstack([self.embeddings, mat])
 
     def search(
         self,
         query: str,
         top_k: int = 5,
-        min_score: float = 0.35,
+        min_score: float = 0.30,
         ticker_filter: Optional[str] = None,
         market_filter: Optional[Literal["SET", "US"]] = None,
     ) -> List[RetrievedChunk]:

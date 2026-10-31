@@ -438,7 +438,7 @@ def _synthesize_grounded_report_and_answer(
             )
 
     for t in tickers:
-        if t not in metrics_map and t in KNOWN_TICKERS:
+        if t not in metrics_map and t in get_known_tickers():
             try:
                 metrics_map[t] = build_financial_metrics_schema(t, year=2025)
             except Exception:
@@ -673,7 +673,7 @@ def run_agent(
             if found_prev:
                 tickers_in_q = found_prev
                 break
-    if ticker_filter and ticker_filter.upper() not in tickers_in_q and ticker_filter.upper() in KNOWN_TICKERS:
+    if ticker_filter and ticker_filter.upper() not in tickers_in_q and ticker_filter.upper() in get_known_tickers():
         tickers_in_q.insert(0, ticker_filter.upper())
     effective_tickers = list(tickers_in_q)
 
