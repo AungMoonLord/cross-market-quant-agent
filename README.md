@@ -2,6 +2,7 @@
 
 [![Python](https://img.shields.io/badge/Python-3.12%2B-blue.svg)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115%2B-009688.svg)](https://fastapi.tiangolo.com/)
+[![Render](https://img.shields.io/badge/Render-Live%20Demo-46E3B7.svg?logo=render&logoColor=white)](https://cross-market-quant-agent.onrender.com)
 [![LLM](https://img.shields.io/badge/LLM-Gemma--4--E4B--it-orange.svg)](https://huggingface.co/google/gemma-4-E4B-it)
 [![Embeddings](https://img.shields.io/badge/Embeddings-BGE--M3-purple.svg)](https://huggingface.co/BAAI/bge-m3)
 [![Tests](https://img.shields.io/badge/Tests-16%20Passed%20(100%25)-brightgreen.svg)]()
@@ -9,6 +10,10 @@
 
 > **Capstone Project — Build & Evaluate an LLM-Powered Application**  
 > Covers Lectures 1–15: Prompting, Structured Outputs, Backend & SSE Streaming, Vector Storage & RAG, Multi-Metric Evaluation, Query Construction, Agents & Tool Calling, Sandboxed SQL Execution, and Adversarial Guardrails.
+> 
+> 🌐 **Live Cloud Application (Render):** [https://cross-market-quant-agent.onrender.com](https://cross-market-quant-agent.onrender.com)  
+> 📖 **Interactive Swagger API Docs:** [https://cross-market-quant-agent.onrender.com/docs](https://cross-market-quant-agent.onrender.com/docs)  
+> 🩺 **Live Health Check:** [https://cross-market-quant-agent.onrender.com/api/health](https://cross-market-quant-agent.onrender.com/api/health)
 
 ---
 
@@ -192,7 +197,19 @@ The evaluation harness was executed across all 30 benchmark examples in `eval/qr
 
 ---
 
-## 7. Quickstart Guide
+## 7. Deployment & Quickstart Guide
+
+### 🌐 Live Cloud Deployment (Render.com)
+The application is live and accessible on the public internet:
+- **Interactive Bloomberg-Style Web Terminal:** [https://cross-market-quant-agent.onrender.com/](https://cross-market-quant-agent.onrender.com/)
+- **Live Interactive Swagger Docs:** [https://cross-market-quant-agent.onrender.com/docs](https://cross-market-quant-agent.onrender.com/docs)
+- **Service Health & Metadata Check:** [https://cross-market-quant-agent.onrender.com/api/health](https://cross-market-quant-agent.onrender.com/api/health)
+
+> **Free-Tier Cold Start Notice:** Render free instances automatically spin down after 15 minutes of inactivity. When visiting for the first time or after idle time, the initial request takes ~45–60 seconds to wake the service. Subsequent requests respond instantly.
+
+---
+
+### Local Installation & Setup
 
 ### Prerequisites
 - Python 3.12+

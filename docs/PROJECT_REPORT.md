@@ -4,6 +4,7 @@
 **Author:** Aung Lwin  
 **Course:** Capstone: Build & Evaluate an LLM-Powered Application (Lectures 1–15)  
 **Repository:** [cross-market-quant-agent](https://github.com/AungMoonLord/cross-market-quant-agent)  
+**Live Deployment:** [https://cross-market-quant-agent.onrender.com](https://cross-market-quant-agent.onrender.com)  
 **Stack:** Python 3.12, FastAPI, SQLite, Google Gemma-4-E4B-it, BAAI BGE-M3  
 
 ---

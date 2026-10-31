@@ -3,7 +3,7 @@
 
 **Target Video Duration:** 4 to 5 Minutes (Meets 3–6 min requirement)  
 **Deliverable:** Screen recording with voiceover narration + working web terminal UI  
-**Application URL:** `http://localhost:8000`  
+**Application URL:** `https://cross-market-quant-agent.onrender.com` (or local `http://localhost:8000`)  
 
 ---
 
