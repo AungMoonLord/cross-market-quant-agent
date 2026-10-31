@@ -6,7 +6,7 @@ Quant Signals, Agent Traces, Chat API, and Evaluation Suite.
 from __future__ import annotations
 
 from typing import Any, Dict, List, Literal, Optional
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 
 class Citation(BaseModel):
@@ -179,7 +179,8 @@ class AgentStepTrace(BaseModel):
 class ChatRequest(BaseModel):
     """REST / SSE API request payload for the Quant Terminal."""
 
-    query: str = Field(..., min_length=2, description="Financial or filing question to analyze")
+    query: Optional[str] = Field(default=None, description="Financial or filing question to analyze")
+    message: Optional[str] = Field(default=None, description="Alternative field for question (HW2/Yaak compatibility)")
     session_id: Optional[str] = Field(default=None, description="Chat session identifier for conversational memory")
     history: Optional[List[Dict[str, str]]] = Field(default_factory=list, description="Conversation history for context memory")
     ticker_filter: Optional[str] = Field(default=None, description="Optional ticker filter (e.g., ADVANC, NVDA)")
@@ -198,6 +199,14 @@ class ChatRequest(BaseModel):
         default="auto",
         description="Response language preference: 'auto' (inferred from query), 'th' (Thai), or 'en' (English)",
     )
+
+    @model_validator(mode="after")
+    def resolve_query_field(self) -> "ChatRequest":
+        raw_text = (self.query or self.message or "").strip()
+        if not raw_text:
+            raise ValueError("Field 'query' or 'message' must be provided and cannot be empty.")
+        self.query = raw_text
+        return self
 
 
 class TranslateRequest(BaseModel):
@@ -227,6 +236,8 @@ class ChatResponse(BaseModel):
     """Complete response returned by /api/chat."""
 
     answer: str = Field(..., description="Grounded markdown response with inline [doc_id:chunk_id] citations")
+    reply: Optional[str] = Field(default=None, description="Alias of answer for HW2 compatibility")
+    model: Optional[str] = Field(default=None, description="Configured LLM model name for HW2 compatibility")
     structured_report: Optional[QuantSignalReport] = Field(
         default=None,
         description="Validated Pydantic v2 QuantSignalReport",
@@ -241,6 +252,15 @@ class ChatResponse(BaseModel):
     )
     abstained: bool = Field(default=False, description="Whether the system abstained")
     latency_ms: float = Field(default=0.0, description="Total end-to-end latency in milliseconds")
+
+    @model_validator(mode="after")
+    def populate_hw2_fields(self) -> "ChatResponse":
+        if self.reply is None:
+            self.reply = self.answer
+        if self.model is None:
+            from app.config import settings
+            self.model = settings.llm_model
+        return self
 
 
 class EvalResult(BaseModel):
