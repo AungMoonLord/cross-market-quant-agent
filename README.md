@@ -333,7 +333,7 @@ cross-market-quant-agent/
 
 ## 10. Authors & Acknowledgments
 
-- **Developer**: Aung Lwin
+- **Developer**: Aungruk Vanichanai
 - **Course**: Advanced Agentic AI Application Development (Lectures 1–15)
 - **Model**: Google Gemma-4-E4B-it served via Nat-D LLM Proxy (`https://llm.nat-d.uk/v1`)
 - **Embeddings**: BAAI BGE-M3
