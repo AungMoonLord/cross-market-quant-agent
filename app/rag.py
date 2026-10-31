@@ -102,6 +102,7 @@ def resolve_ticker(text: Optional[str]) -> Optional[str]:
         "BE": ["BE", "BLOOM", "BLOOM ENERGY"],
         "GOOG": ["GOOG", "GOOGLE", "ALPHABET"],
         "SPCX": ["SPACEX", "SPACE-X", "SPACE X", "SPCX"],
+        "SNDK": ["SNDK", "SANDISK", "SANDISK CORPORATION"],
         "ADVANC": ["ADVANC", "AIS", "ADVANCED INFO"],
         "BDMS": ["BDMS", "BANGKOK DUSIT"],
         "CPALL": ["CPALL", "CP ALL", "7-ELEVEN", "CP AXTRA"],
@@ -272,7 +273,7 @@ class GroundedRAGPipeline:
         self,
         query: str,
         top_k: int = 5,
-        min_score: float = 0.35,
+        min_score: float = 0.30,
         ticker_filter: Optional[str] = None,
         market_filter: Optional[Literal["SET", "US"]] = None,
     ) -> List[RetrievedChunk]:
@@ -313,7 +314,7 @@ class GroundedRAGPipeline:
         self,
         query: str,
         top_k: int = 5,
-        min_score: float = 0.35,
+        min_score: float = 0.30,
         ticker_filter: Optional[str] = None,
         market_filter: Optional[Literal["SET", "US"]] = None,
     ) -> Dict[str, Any]:

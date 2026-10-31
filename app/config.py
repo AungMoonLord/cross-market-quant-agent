@@ -41,7 +41,7 @@ def load_config() -> AppConfig:
     base_url = os.getenv("OPENAI_BASE_URL") or None
     llm_model = os.getenv("LLM_MODEL", "gemma-4-E4B-it")
     embedding_model = os.getenv("EMBEDDING_MODEL", "bge-m3")
-    min_score = float(os.getenv("MIN_SCORE", "0.35"))
+    min_score = float(os.getenv("MIN_SCORE", "0.30"))
     top_k = int(os.getenv("TOP_K", "5"))
     max_agent_steps = int(os.getenv("MAX_AGENT_STEPS", "6"))
     chunking_strategy = os.getenv("CHUNKING_STRATEGY", "markdown_section")

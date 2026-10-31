@@ -87,9 +87,22 @@ class VectorStore:
                 continue
 
             cos_score = float(raw_scores[idx])
-            # Boost score slightly when query explicitly names the chunk's ticker
-            if chunk.ticker.lower() in q_lower:
-                cos_score = min(1.0, cos_score + 0.08)
+            # Boost score when query names chunk ticker, company alias, or when filtered to this ticker
+            ticker_aliases = [chunk.ticker.lower()]
+            if chunk.ticker.upper() == "SNDK":
+                ticker_aliases.extend(["sandisk", "san disk"])
+            elif chunk.ticker.upper() == "SPCX":
+                ticker_aliases.extend(["spacex", "space-x"])
+            elif chunk.ticker.upper() == "GOOG":
+                ticker_aliases.extend(["google", "alphabet"])
+            elif chunk.ticker.upper() == "BE":
+                ticker_aliases.extend(["bloom", "bloom energy"])
+            elif chunk.ticker.upper() == "PENG":
+                ticker_aliases.extend(["penguin"])
+
+            matches_ticker = any(a in q_lower for a in ticker_aliases) or (norm_ticker and chunk.ticker.upper() == norm_ticker)
+            if matches_ticker:
+                cos_score = min(1.0, cos_score + 0.20)
 
             score = round(max(0.0, min(1.0, cos_score)), 4)
             if score >= min_score:

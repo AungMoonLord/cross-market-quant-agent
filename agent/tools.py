@@ -34,7 +34,7 @@ class SearchFilingsRAGInput(BaseModel):
     query: str = Field(..., min_length=2, description="Filing search query (e.g., 'SpaceX Q3 2026 revenue' or 'Bloom Energy 2026 guidance')")
     ticker: Optional[str] = Field(default=None, description="Optional ticker filter: BE, GOOG, JPM, PENG, SPCX")
     market: Optional[Literal["SET", "US"]] = Field(default=None, description="Optional market filter: 'SET' or 'US'")
-    min_score: float = Field(default=0.35, ge=0.0, le=1.0, description="Minimum cosine similarity threshold")
+    min_score: float = Field(default=0.30, ge=0.0, le=1.0, description="Minimum cosine similarity threshold")
 
     @field_validator("ticker")
     @classmethod

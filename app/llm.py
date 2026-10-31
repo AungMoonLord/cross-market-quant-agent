@@ -164,7 +164,7 @@ class LLMClient:
                     response = self.client.embeddings.create(
                         model=self.embedding_model,
                         input=batch,
-                        timeout=10.0,
+                        timeout=35.0,
                     )
                     for item in response.data:
                         arr = np.array(item.embedding, dtype=np.float64)

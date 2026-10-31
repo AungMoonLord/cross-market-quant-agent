@@ -92,6 +92,7 @@ def _extract_tickers_mentioned(text: str) -> List[str]:
         "TSLA": ["TSLA", "TESLA"],
         "PTT": ["PTT", "ปตท"],
         "SPCG": ["SPCG"],
+        "SNDK": ["SNDK", "SANDISK", "SANDISK CORPORATION"],
     }
     # Check dynamic SQLite companies table names
     try:
@@ -176,7 +177,7 @@ def _plan_deterministic_tool_sequence(
         for w in (
             "roe", "dupont", "altman", "z-score", "z score", "margin", "fcf", "cash flow",
             "cagr", "growth", "ratio", "debt", "leverage", "ebitda", "pe", "p/e", "valuation",
-            "compare", "vs", "versus", "metric", "roic", "turnover", "multiplier",
+            "compare", "vs", "versus", "metric", "roic", "turnover", "multiplier", "เปรียบเทียบ", "อัตราส่วน", "วิเคราะห์",
         )
     )
     wants_sql = any(
@@ -208,8 +209,8 @@ def _plan_deterministic_tool_sequence(
                 f"Comparing cross-market peers {effective_tickers} normalized to {norm_currency} via fx_rates.",
             )
         )
-    elif len(effective_tickers) == 1 and (wants_quant or wants_sql or not wants_rag):
-        year = 2024 if ("2024" in q_lower and "2025" not in q_lower) else (2023 if ("2023" in q_lower and "2025" not in q_lower) else 2025)
+    elif len(effective_tickers) == 1:
+        year = 2026 if "2026" in q_lower else (2024 if ("2024" in q_lower and "2025" not in q_lower) else (2023 if ("2023" in q_lower and "2025" not in q_lower) else 2025))
         planned.append(
             (
                 "compute_quant_metrics",
@@ -581,8 +582,7 @@ def _synthesize_grounded_report_and_answer(
             "content": (
                 f"USER QUESTION: {question}\n\n"
                 + (lang_instruction + "\n" if lang_instruction else "")
-                + "DETERMINISTIC QUANT & SQL RESULTS:\n"
-                + ("\n".join(quant_summary_blocks) if quant_summary_blocks else "None")
+                + ("DETERMINISTIC QUANT & SQL RESULTS:\n" + "\n".join(quant_summary_blocks) if quant_summary_blocks else "QUANTITATIVE FINANCIAL CONTEXT:\nExtract and synthesize all requested financial figures, quarterly performance numbers, revenue, margins, and operational disclosures directly from the RETRIEVED FILING SOURCES below.")
                 + "\n\n"
                 + ("RETRIEVED FILING SOURCES:\n" + "\n\n".join(chunk_context_lines) if chunk_context_lines else "")
                 + "\n\nSynthesize a comprehensive, institutional-grade quantitative response.\n"
@@ -641,7 +641,7 @@ def _synthesize_grounded_report_and_answer(
 def run_agent(
     question: str,
     max_steps: int = 5,
-    min_score: float = 0.35,
+    min_score: float = settings.min_score,
     stream_callback: Optional[Callable[[str, Dict[str, Any]], None]] = None,
     ticker_filter: Optional[str] = None,
     market_filter: Optional[Literal["SET", "US"]] = None,
@@ -675,6 +675,7 @@ def run_agent(
                 break
     if ticker_filter and ticker_filter.upper() not in tickers_in_q and ticker_filter.upper() in KNOWN_TICKERS:
         tickers_in_q.insert(0, ticker_filter.upper())
+    effective_tickers = list(tickers_in_q)
 
     # 1. Non-financial query check
     if is_non_financial_query(question):
