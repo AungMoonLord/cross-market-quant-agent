@@ -206,6 +206,23 @@ def detect_query_filters(
     known = get_known_tickers()
     matched = [t for t in known if re.search(rf"(?<![A-Za-z0-9]){re.escape(t)}(?![A-Za-z0-9])", q_upper)]
 
+    # Dynamic lookup against SQLite companies table for company names and aliases
+    try:
+        import sqlite3
+        if settings.sqlite_db_path.exists():
+            conn = sqlite3.connect(str(settings.sqlite_db_path))
+            rows = conn.execute("SELECT ticker, name, market FROM companies").fetchall()
+            conn.close()
+            for c_ticker, c_name, c_mkt in rows:
+                c_t = c_ticker.upper()
+                c_n = c_name.upper()
+                words = [w for w in re.findall(r"[A-Z0-9]+", c_n) if len(w) >= 4]
+                if (c_t in q_upper or c_n in q_upper or any(w in q_upper for w in words)) and c_t in known:
+                    if c_t not in matched:
+                        matched.append(c_t)
+    except Exception:
+        pass
+
     if len(matched) == 1:
         return matched[0], explicit_market
     return None, explicit_market

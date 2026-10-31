@@ -434,13 +434,37 @@ def ingest_filing_to_corpus(
     else:
         store = VectorStore(client=llm_client)
 
-    # Remove any existing chunks for this exact doc_id to support clean re-uploads
-    remaining_chunks = [c for c in store.chunks if c.doc_id != doc_id]
-    all_chunks = remaining_chunks + new_chunks
+    # 6. Update VectorStore incrementally without re-embedding baseline chunks
+    import numpy as np
 
-    # Rebuild vector store cleanly
+    remaining_indices = [i for i, c in enumerate(store.chunks) if c.doc_id != doc_id]
+    remaining_chunks = [store.chunks[i] for i in remaining_indices]
+
+    # Only embed new_chunks (takes 1-2s, never times out)
+    new_vectors = llm_client.get_embeddings([c.text for c in new_chunks])
+    new_mat = np.array(new_vectors, dtype=np.float64)
+    new_norms = np.linalg.norm(new_mat, axis=1, keepdims=True)
+    new_mat = new_mat / np.where(new_norms > 1e-12, new_norms, 1.0)
+
+    if store.embeddings is not None and len(remaining_indices) > 0 and store.embeddings.ndim == 2:
+        remaining_embeddings = store.embeddings[remaining_indices]
+        if remaining_embeddings.shape[1] != new_mat.shape[1]:
+            target_dim = remaining_embeddings.shape[1]
+            if new_mat.shape[1] > target_dim:
+                new_mat = new_mat[:, :target_dim]
+            else:
+                padded = np.zeros((new_mat.shape[0], target_dim), dtype=np.float64)
+                padded[:, :new_mat.shape[1]] = new_mat
+                new_mat = padded
+            n = np.linalg.norm(new_mat, axis=1, keepdims=True)
+            new_mat = new_mat / np.where(n > 1e-12, n, 1.0)
+        combined_embeddings = np.vstack([remaining_embeddings, new_mat])
+    else:
+        combined_embeddings = new_mat
+
     fresh_store = VectorStore(client=llm_client)
-    fresh_store.add_chunks(all_chunks)
+    fresh_store.chunks = remaining_chunks + new_chunks
+    fresh_store.embeddings = combined_embeddings
     fresh_store.save(index_path)
 
     # 7. Refresh in-memory agent tools RAG pipeline

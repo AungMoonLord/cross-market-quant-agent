@@ -6,6 +6,7 @@ strict `min_score` thresholding, and JSON persistence.
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 from typing import Any, Dict, List, Literal, Optional
 import numpy as np
@@ -90,6 +91,18 @@ class VectorStore:
         norm_ticker = resolve_ticker(ticker_filter) if ticker_filter else None
         norm_market = market_filter.strip().upper() if market_filter else None
 
+        # Look up registered company names dynamically from SQLite
+        comp_name_map = {}
+        try:
+            import sqlite3
+            if settings.sqlite_db_path.exists():
+                conn = sqlite3.connect(str(settings.sqlite_db_path))
+                for r in conn.execute("SELECT ticker, name FROM companies").fetchall():
+                    comp_name_map[r[0].upper()] = r[1].lower()
+                conn.close()
+        except Exception:
+            pass
+
         for idx, chunk in enumerate(self.chunks):
             if norm_ticker and chunk.ticker.upper() != norm_ticker:
                 continue
@@ -97,20 +110,16 @@ class VectorStore:
                 continue
 
             cos_score = float(raw_scores[idx])
-            # Boost score when query names chunk ticker, company alias, or when filtered to this ticker
-            ticker_aliases = [chunk.ticker.lower()]
-            if chunk.ticker.upper() == "SNDK":
-                ticker_aliases.extend(["sandisk", "san disk"])
-            elif chunk.ticker.upper() == "SPCX":
-                ticker_aliases.extend(["spacex", "space-x"])
-            elif chunk.ticker.upper() == "GOOG":
-                ticker_aliases.extend(["google", "alphabet"])
-            elif chunk.ticker.upper() == "BE":
-                ticker_aliases.extend(["bloom", "bloom energy"])
-            elif chunk.ticker.upper() == "PENG":
-                ticker_aliases.extend(["penguin"])
+            c_tick = chunk.ticker.upper()
+            c_name = comp_name_map.get(c_tick, "")
 
-            matches_ticker = any(a in q_lower for a in ticker_aliases) or (norm_ticker and chunk.ticker.upper() == norm_ticker)
+            name_words = [w for w in re.findall(r"[a-z0-9]+", c_name) if len(w) >= 4]
+            matches_ticker = (
+                (c_tick.lower() in q_lower)
+                or (norm_ticker and c_tick == norm_ticker)
+                or (c_name and c_name in q_lower)
+                or any(w in q_lower for w in name_words)
+            )
             if matches_ticker:
                 cos_score = min(1.0, cos_score + 0.20)
 
